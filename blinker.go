@@ -32,9 +32,9 @@ func main() {
 
 	for {
 		pin.Set()
-		time.Sleep(10000 * time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 		pin.Clear()
-		time.Sleep(10000 * time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 	}
 }
 
