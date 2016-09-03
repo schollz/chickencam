@@ -39,6 +39,8 @@ $(function() {
               <article class="full four-fifth-1000">
                   <h1 id="picnic-css">ChickenCam</h1>
                   <p>What are the chickens up to?</p>
+
+
                   {{range $i, $date := .Dates}}
                     <h2 id="{{ $date }}">{{ $date }}</h2>
                     <article class="card">
@@ -50,25 +52,8 @@ $(function() {
                         </audio>
                       </header>
                     </article>
-                {{ end }}
-                  <h2 id="1">1</h2>
-                  <article class="card">
-                    <header>
-                      <img class="lazy" data-original="/static/data/20160903154836.jpg" width="800" height="600">
-                      <audio controls>
-                        <source src="/static/data/20160903154836.wav" type="audio/wav">
-                      Your browser does not support the audio element.
-                      </audio>
-                    </header>
-                  </article>
+                   {{ end }}
 
-
-                  <h2 id="2">2</h2>
-                  <article class="card">
-                    <header>
-                      <h3>A really simple h3</h3>
-                    </header>
-                  </article>
               </article>
           </section>
       </main>
