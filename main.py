@@ -186,9 +186,8 @@ if __name__ == "__main__":
 
         logger.debug("Comparing new sounds")
         audioBaseline2 = getAudioLevel()
-        percentChange = 100 * \
-            (1 - (audioBaseline2 - audioBaseline) / audioBaseline)
+        percentChange = (audioBaseline2 - audioBaseline) / audioBaseline
         logger.debug("Audio percent change: %2.1f" % percentChange)
-        if percentChange >= 15:
+        if percentChange >= 1:
             saveImageAndAudio()
         audioBaseline = audioBaseline2
