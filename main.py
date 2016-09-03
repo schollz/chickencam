@@ -161,9 +161,9 @@ def saveImageAndAudio():
     t1.join()
     t2.join()
     logger.debug("Syncing...")
-    os.system("rsync -r --include '*/' --include '*.jpg' --include '*.wav' --exclude '*' --prune-empty-dirs ./ zns@cowyo.com:/www/hens/server/static/data/")
-    os.system("rm *.wav")
-    os.system("rm *.jpg")
+    os.system("rsync *.wav *.jpg zns@cowyo.com:/www/hens/server/static/data/")
+    # os.system("rm *.wav")
+    # os.system("rm *.jpg")
     logger.debug("...done.")
 
 
