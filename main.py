@@ -151,9 +151,11 @@ def saveImageAndAudio():
 	t2.start()
 	t1.join()
 	t2.join()
+	logger.debug("Syncing...")
 	os.system("rsync -r --include '*/' --include '*.jpg' --include '*.wav' --exclude '*' --prune-empty-dirs ./ zns@cowyo.com:/www/hens/server/static/data/")
 	os.system("rm *.wav")
 	os.system("rm *.jpg")
+	logger.debug("...done.")
 
 
 if __name__ == "__main__":
@@ -167,7 +169,7 @@ if __name__ == "__main__":
 		logger.debug("Comparing new images")
 		image2,buffer2 = captureTestImage()
 		percentChange = compareImages(buffer1,buffer2)
-		if percentChange > 15:
+		if percentChange >= 15:
 			saveImageAndAudio()
 		image1 = image2
 		buffer1 = buffer2
