@@ -2,6 +2,7 @@ import subprocess
 import time
 import datetime
 import threading
+import os
 
 import pyaudio
 import audioop
@@ -150,6 +151,9 @@ def saveImageAndAudio():
 	t2.start()
 	t1.join()
 	t2.join()
+	os.system("rsync -r --include '*/' --include '*.jpg' --include '*.wav' --exclude '*' --prune-empty-dirs ./ zns@cowyo.com:/www/hens/server/static/data/")
+	os.system("rm *.wav")
+	os.system("rm *.jpg")
 
 
 if __name__ == "__main__":
