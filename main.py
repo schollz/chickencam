@@ -166,7 +166,7 @@ def saveImageAndAudio():
     logger = logging.getLogger('saveImageAndAudio')
     filename = getTimeString()
     logger.debug('Saving image and audio to %s' % filename)
-    t1 = threading.Thread(target=recordAudio, args=(5, filename,))
+    t1 = threading.Thread(target=recordAudio, args=(10, filename,))
     t2 = threading.Thread(target=saveImage, args=(filename,))
     t1.start()
     t2.start()
