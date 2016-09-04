@@ -179,7 +179,7 @@ if __name__ == "__main__":
         image2, buffer2 = captureTestImage()
         percentChange = compareImages(buffer1, buffer2)
         logger.debug("Photo percent change: %2.1f" % percentChange)
-        if percentChange >= 15:
+        if percentChange >= 1:
             saveImageAndAudio()
         image1 = image2
         buffer1 = buffer2
@@ -188,6 +188,6 @@ if __name__ == "__main__":
         audioBaseline2 = getAudioLevel()
         percentChange = (audioBaseline2 - audioBaseline) / audioBaseline
         logger.debug("Audio percent change: %2.1f" % percentChange)
-        if percentChange >= 1:
+        if percentChange >= 10:
             saveImageAndAudio()
         audioBaseline = audioBaseline2
