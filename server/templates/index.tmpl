@@ -9,13 +9,29 @@ $(function() {
     $("img.lazy").lazyload();
 });
 </script>
+<link rel="apple-touch-icon" sizes="57x57" href="/static/img/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/static/img/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/static/img/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/static/img/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/static/img/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/static/img/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/static/img/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/static/img/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon-16x16.png">
+<link rel="manifest" href="/static/img/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
 </head>
 <body>
-
+<!--
   <nav class="loading">
       <a class="brand" href="/"><span>ChickenCam</span></a>
-      <!-- responsiveness-->
-      <!-- <input class="show" id="bmenu" type=
+      <input class="show" id="bmenu" type=
       "checkbox">
       <label class="burger toggle pseudo button" for=
       "bmenu">menu</label>
@@ -25,20 +41,32 @@ $(function() {
           "https://github.com/picnicss/picnic" target=
           "_blank">GitHub</a><a class="button icon-file-code" href=
           "/documentation">Documentation</a>
-      </div> -->
-  </nav>
+      </div>
+  </nav> -->
 
   <main class="documentation" id="home">
           <section class="flex five">
-              <aside class="full fifth-1000">
+              <aside class="full fourth-1200">
                   <h2>Latest</h2>
                   <div class="links flex two three-500 five-800 one-1000">
                   </div><a class="top pseudo button" href="#home" tabindex="-1">▲
                   Up you go ▲</a>
               </aside>
-              <article class="full four-fifth-1000">
-                  <h1 id="picnic-css">ChickenCam</h1>
-                  <p>What were the chickens up to?</p>
+              <article class="full three-fourth-1200">
+
+
+                <div class="flex two">
+                  <div><span>
+                    <h1 id="picnic-css">ChickenCam</h1>
+                    <p>What do chickens do all day?</p>
+                    <p>See the sights and hear the sounds of chickens!</p>
+                    <p><a href="https://github.com/schollz/hens">Click here for instructions</a> to build your own chicken cam.</p>
+                  </span></div>
+                  <div><span>
+                      <img class="lazy" data-original="/static/img/chicken.png">
+                  </span></div>
+                </div>
+
 
 
                   {{range $i, $date := .Dates}}
