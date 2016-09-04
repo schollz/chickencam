@@ -14,6 +14,13 @@ try:
 except ImportError:
     from io import StringIO, BytesIO
 
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
+RELAY_ON = 0
+RELAY_OFF = 1
+GPIO.setup(PINOUT, GPIO.OUT)
+
 import logging
 # set up logging to file - see previous section for more details
 logging.basicConfig(level=logging.DEBUG,
@@ -98,6 +105,7 @@ def recordAudio(record_seconds, wave_output_filename):
 # Capture a small test image (for motion detection)
 # Keep image in RAM until we need to do face recognition
 def captureTestImage():
+    GPIO.output(RELAY, RELAY_ON)
     logger = logging.getLogger('captureTestImage')
     logger.debug('Capturing test image...')
     command = "raspistill -w %s -h %s -t 1 -n -vf -e bmp -o -" % (
@@ -109,6 +117,7 @@ def captureTestImage():
     buffer = im.load()
     imageData.close()
     logger.debug('...done.')
+    GPIO.output(RELAY, RELAY_OFF)
     return im, buffer
 
 # Save a full size image to disk
@@ -118,8 +127,10 @@ def saveImage(filenameFull):
     logger = logging.getLogger('saveImage')
     logger.debug('Capturing image...')
     filenameFull = filenameFull + ".jpg"
+    GPIO.output(RELAY, RELAY_ON)
     subprocess.call(
         "raspistill -w 800 -h 600 -t 1 -n -vf -e jpg -q 15 -o %s" % filenameFull, shell=True)
+    GPIO.output(RELAY, RELAY_OFF)
     logger.debug("...captured image %s" % filenameFull)
 
 
