@@ -14,6 +14,7 @@
 - [Infrared LEDs](https://www.amazon.com/gp/product/B00ULB0U44/ref=oh_aui_detailpage_o04_s00?ie=UTF8&psc=1)
 - [USB microphone](https://www.amazon.com/gp/product/B014MASID4/ref=oh_aui_detailpage_o06_s00?ie=UTF8&psc=1)
 - [Batteries](https://www.amazon.com/gp/product/B00U1U7K02/ref=oh_aui_detailpage_o07_s00?ie=UTF8&psc=1) with [Battery holder](https://www.amazon.com/gp/product/B01505LWDI/ref=oh_aui_detailpage_o07_s00?ie=UTF8&psc=1)
+- Resistors (~600ohm for 12V, ~250ohm for 5V)
 - [5V relay](https://www.amazon.com/gp/product/B00E0NTPP4/ref=oh_aui_search_detailpage?ie=UTF8&psc=1)
 - [Chickens](https://cse.google.com/cse?cx=008732268318596706411:nhtd4cwl5xu&q=chickens&oq=chickens&gs_l=partner.3...1329.2438.0.2513.10.9.0.1.1.0.152.791.3j5.8.0.gsnos%2Cn%3D13...0.981j163459j9j1..1ac.1.25.partner..4.6.472.KwyGWJjj03s#gsc.tab=0&gsc.q=chickens%20for%20sale&gsc.sort=). No chickens? No problem, it will just be very boring.
 
