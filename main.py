@@ -19,7 +19,8 @@ GPIO.setmode(GPIO.BCM)
 RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
 RELAY_ON = 0
 RELAY_OFF = 1
-GPIO.setup(PINOUT, GPIO.OUT)
+GPIO.setup(RELAY, GPIO.OUT)
+GPIO.output(RELAY, RELAY_OFF)
 
 import logging
 # set up logging to file - see previous section for more details
