@@ -1,6 +1,9 @@
 # ChickenCam
 
-![](/server/static/img/chicken.jpg)
+![](https://img.shields.io/badge/build-passing-brightgreen.svg)
+
+
+![](https://raw.githubusercontent.com/schollz/hens/master/server/static/img/chicken.png)
 
 ## Requirements
 
