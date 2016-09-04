@@ -180,26 +180,27 @@ def saveImageAndAudio():
 
 
 if __name__ == "__main__":
-    logger = logging.getLogger('main')
-    image1, buffer1 = captureTestImage()
-    audioBaseline = getAudioLevel()
-    while 1:
-        logger.debug("Sleeping")
-        time.sleep(3)
-
-        logger.debug("Comparing new images")
-        image2, buffer2 = captureTestImage()
-        percentChange = compareImages(buffer1, buffer2)
-        logger.debug("Photo percent change: %2.1f" % percentChange)
-        if percentChange >= 1:
-            saveImageAndAudio()
-        image1 = image2
-        buffer1 = buffer2
-
-        logger.debug("Comparing new sounds")
-        audioBaseline2 = getAudioLevel()
-        percentChange = (audioBaseline2 - audioBaseline) / audioBaseline
-        logger.debug("Audio percent change: %2.1f" % percentChange)
-        if percentChange >= 10:
-            saveImageAndAudio()
-        audioBaseline = audioBaseline2
+    saveImage('test')
+    # logger = logging.getLogger('main')
+    # image1, buffer1 = captureTestImage()
+    # audioBaseline = getAudioLevel()
+    # while 1:
+    #     logger.debug("Sleeping")
+    #     time.sleep(3)
+    #
+    #     logger.debug("Comparing new images")
+    #     image2, buffer2 = captureTestImage()
+    #     percentChange = compareImages(buffer1, buffer2)
+    #     logger.debug("Photo percent change: %2.1f" % percentChange)
+    #     if percentChange >= 1:
+    #         saveImageAndAudio()
+    #     image1 = image2
+    #     buffer1 = buffer2
+    #
+    #     logger.debug("Comparing new sounds")
+    #     audioBaseline2 = getAudioLevel()
+    #     percentChange = (audioBaseline2 - audioBaseline) / audioBaseline
+    #     logger.debug("Audio percent change: %2.1f" % percentChange)
+    #     if percentChange >= 10:
+    #         saveImageAndAudio()
+    #     audioBaseline = audioBaseline2
