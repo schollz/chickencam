@@ -56,9 +56,12 @@ and change them to
 
 ## Run chicken monitoring program
 
+First install [Go1.7+](https://golang.org/dl/).
+
 ```
 git clone https://github.com/schollz/hens.git
 cd hens
+go build -o sunset
 sudo python3 main.py
 ```
 
