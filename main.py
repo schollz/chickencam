@@ -1,30 +1,3 @@
-import subprocess
-import time
-import datetime
-import threading
-import os
-
-import pyaudio
-import audioop
-import numpy
-import wave
-from PIL import Image
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO, BytesIO
-
-try:
-    import RPi.GPIO as GPIO
-    GPIO.setmode(GPIO.BCM)
-    RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
-    RELAY_ON = 0
-    RELAY_OFF = 1
-    GPIO.setup(RELAY, GPIO.OUT)
-    GPIO.output(RELAY, RELAY_OFF)
-except:
-    pass
-
 import logging
 # set up logging to file - see previous section for more details
 logging.basicConfig(level=logging.DEBUG,
@@ -41,6 +14,40 @@ formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
 console.setFormatter(formatter)
 # add the handler to the root logger
 logging.getLogger('').addHandler(console)
+
+import sys
+import subprocess
+import time
+import datetime
+import threading
+import os
+
+
+try:
+    import pyaudio
+except:
+    logging.warn("sudo apt-get install python3-pyaudio")
+import audioop
+import numpy
+import wave
+try:
+    from PIL import Image
+except:
+    logging.warn("sudo apt-get install python3-pil")
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO, BytesIO
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+    RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
+    RELAY_ON = 0
+    RELAY_OFF = 1
+    GPIO.setup(RELAY, GPIO.OUT)
+    GPIO.output(RELAY, RELAY_OFF)
+except:
+    logging.warn("sudo apt-get install python3-rpio.gpio")
 
 
 TEST_IMAGE_SIZE = (400, 300)
@@ -76,7 +83,7 @@ def recordAudio(record_seconds, wave_output_filename):
     try:
         audioRecorder(record_seconds, wave_output_filename)
     except:
-        logger.debug("Unexpected error:", sys.exc_info()[0])
+        logger.error(sys.exc_info())
 
 
 def audioRecorder(record_seconds, wave_output_filename):
@@ -151,7 +158,7 @@ def saveImage(filenameFull):
         turnLight(OFF)
         logger.debug("...captured image %s" % filenameFull)
     except:
-        logger.debug("Unexpected error:", sys.exc_info()[0])
+        logger.error(sys.exc_info())
 
 
 def compareImages(buffer1, buffer2):
@@ -215,22 +222,21 @@ def getSunTimes():
 
 if __name__ == "__main__":
     print(getSunTimes())
-    # saveImage('test')
-    # logger = logging.getLogger('main')
-    # image1, buffer1 = captureTestImage()
-    # audioBaseline = getAudioLevel()
-    # while 1:
-    #     logger.debug("Sleeping")
-    #     time.sleep(3)
-    #
-    #     logger.debug("Comparing new images")
-    #     image2, buffer2 = captureTestImage()
-    #     percentChange = compareImages(buffer1, buffer2)
-    #     logger.debug("Photo percent change: %2.1f" % percentChange)
-    #     if percentChange >= 1:
-    #         saveImageAndAudio()
-    #     image1 = image2
-    #     buffer1 = buffer2
+    saveImage('test')
+    logger = logging.getLogger('main')
+    image1, buffer1 = captureTestImage()
+    while 1:
+        logger.debug("Sleeping")
+        time.sleep(3)
+
+        logger.debug("Comparing new images")
+        image2, buffer2 = captureTestImage()
+        percentChange = compareImages(buffer1, buffer2)
+        logger.debug("Photo percent change: %2.1f" % percentChange)
+        if percentChange >= 1:
+            saveImageAndAudio()
+        image1 = image2
+        buffer1 = buffer2
     #
     #     logger.debug("Comparing new sounds")
     #     audioBaseline2 = getAudioLevel()
