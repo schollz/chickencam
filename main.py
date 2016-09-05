@@ -154,7 +154,7 @@ def saveImage(filenameFull):
         filenameFull = filenameFull + ".jpg"
         turnLight(ON)
         subprocess.call(
-            "raspistill -w 800 -h 600 -t 1 -n -vf -e jpg -q 15 -o %s" % filenameFull, shell=True)
+            "raspistill -w 800 -h 600 -t 1 -n -vf -e jpg -q 90 -o %s" % filenameFull, shell=True)
         turnLight(OFF)
         logger.debug("...captured image %s" % filenameFull)
     except:
