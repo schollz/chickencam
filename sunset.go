@@ -1,9 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"time"
 )
+
+// Show sunrise and sunset for first 5 days of June in LA
+func main() {
+
+	_, timeToSunset := GetSunset()
+	_, timeToSunrise := GetSunrise()
+	fmt.Println(timeToSunrise.Hours(), timeToSunset.Hours())
+}
 
 // Taken from https://github.com/keep94/sunrise
 func GetSunset() (time.Time, time.Duration) {
@@ -20,6 +29,23 @@ func GetSunset() (time.Time, time.Duration) {
 	}
 
 	return s.Sunset(), s.Sunset().Sub(time.Now())
+}
+
+// Taken from https://github.com/keep94/sunrise
+func GetSunrise() (time.Time, time.Duration) {
+	var s Sunrise
+
+	// Start time is June 1, 2013 PST
+	location, _ := time.LoadLocation("America/New_York")
+	startTime := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, location)
+
+	// Coordinates of LA are 34.05N 118.25W
+	s.Around(35.994, -78.8986, startTime)
+	for s.Sunrise().Before(startTime) {
+		s.AddDays(1)
+	}
+
+	return s.Sunrise(), s.Sunrise().Sub(time.Now())
 }
 
 const (

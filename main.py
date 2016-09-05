@@ -178,9 +178,13 @@ def saveImageAndAudio():
     # os.system("rm *.jpg")
     logger.debug("...done.")
 
+import subprocess
+p = subprocess.Popen(['sunset.exe'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+out, err = p.communicate()
+print(out)
 
 if __name__ == "__main__":
-    saveImage('test')
+    # saveImage('test')
     # logger = logging.getLogger('main')
     # image1, buffer1 = captureTestImage()
     # audioBaseline = getAudioLevel()
