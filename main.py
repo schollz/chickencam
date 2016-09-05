@@ -14,13 +14,16 @@ try:
 except ImportError:
     from io import StringIO, BytesIO
 
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
-RELAY_ON = 0
-RELAY_OFF = 1
-GPIO.setup(RELAY, GPIO.OUT)
-GPIO.output(RELAY, RELAY_OFF)
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+    RELAY = 17  # https://pinout.xyz/pinout/pin11_gpio17
+    RELAY_ON = 0
+    RELAY_OFF = 1
+    GPIO.setup(RELAY, GPIO.OUT)
+    GPIO.output(RELAY, RELAY_OFF)
+except:
+    pass
 
 import logging
 # set up logging to file - see previous section for more details
@@ -41,7 +44,8 @@ logging.getLogger('').addHandler(console)
 
 
 TEST_IMAGE_SIZE = (400, 300)
-
+OFF = False
+ON = True
 # Set default mic using
 # http://raspberrypi.stackexchange.com/questions/37177/best-way-to-setup-usb-mic-as-system-default-on-raspbian-jessie
 
@@ -68,6 +72,14 @@ def getAudioLevel():
 
 
 def recordAudio(record_seconds, wave_output_filename):
+    logger = logging.getLogger('recordAudio')
+    try:
+        audioRecorder(record_seconds, wave_output_filename)
+    except:
+        logger.debug("Unexpected error:", sys.exc_info()[0])
+
+
+def audioRecorder(record_seconds, wave_output_filename):
     logger = logging.getLogger('recordAudio')
     wave_output_filename = wave_output_filename + ".wav"
     FORMAT = pyaudio.paInt16
@@ -103,10 +115,16 @@ def recordAudio(record_seconds, wave_output_filename):
     waveFile.close()
 
 
-# Capture a small test image (for motion detection)
-# Keep image in RAM until we need to do face recognition
+def turnLight(on):
+    a, b, isDaylight = getSunTimes()
+    if on == True and not isDaylight:
+        GPIO.output(RELAY, RELAY_ON)
+    else:
+        GPIO.output(RELAY, RELAY_OFF)
+
+
 def captureTestImage():
-    GPIO.output(RELAY, RELAY_ON)
+    turnLight(ON)
     logger = logging.getLogger('captureTestImage')
     logger.debug('Capturing test image...')
     command = "raspistill -w %s -h %s -t 1 -n -vf -e bmp -o -" % (
@@ -118,21 +136,22 @@ def captureTestImage():
     buffer = im.load()
     imageData.close()
     logger.debug('...done.')
-    GPIO.output(RELAY, RELAY_OFF)
+    turnLight(OFF)
     return im, buffer
-
-# Save a full size image to disk
 
 
 def saveImage(filenameFull):
-    logger = logging.getLogger('saveImage')
-    logger.debug('Capturing image...')
-    filenameFull = filenameFull + ".jpg"
-    GPIO.output(RELAY, RELAY_ON)
-    subprocess.call(
-        "raspistill -w 800 -h 600 -t 1 -n -vf -e jpg -q 15 -o %s" % filenameFull, shell=True)
-    GPIO.output(RELAY, RELAY_OFF)
-    logger.debug("...captured image %s" % filenameFull)
+    try:
+        logger = logging.getLogger('saveImage')
+        logger.debug('Capturing image...')
+        filenameFull = filenameFull + ".jpg"
+        turnLight(ON)
+        subprocess.call(
+            "raspistill -w 800 -h 600 -t 1 -n -vf -e jpg -q 15 -o %s" % filenameFull, shell=True)
+        turnLight(OFF)
+        logger.debug("...captured image %s" % filenameFull)
+    except:
+        logger.debug("Unexpected error:", sys.exc_info()[0])
 
 
 def compareImages(buffer1, buffer2):
@@ -180,13 +199,19 @@ def saveImageAndAudio():
 
 
 def getSunTimes():
+    logger = logging.getLogger('getSunTimes')
     p = subprocess.Popen(
         ['./sunset'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     m = out.decode('utf-8').split()
     hoursToSunrise = float(m[0])
     hoursToSunset = float(m[1])
-    return hoursToSunrise, hoursToSunset
+    daylight = False
+    if hoursToSunrise < 0 and hoursToSunset > 0:
+        daylight = True
+    logger.debug("Sunrise: %2.1f, Sunset: %2.1f, %d" %
+                 (hoursToSunrise, hoursToSunset, daylight))
+    return hoursToSunrise, hoursToSunset, daylight
 
 if __name__ == "__main__":
     print(getSunTimes())
