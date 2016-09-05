@@ -178,12 +178,18 @@ def saveImageAndAudio():
     # os.system("rm *.jpg")
     logger.debug("...done.")
 
-import subprocess
-p = subprocess.Popen(['sunset.exe'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-out, err = p.communicate()
-print(out)
+
+def getSunTimes():
+    p = subprocess.Popen(
+        ['./sunset'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    m = out.decode('utf-8').split()
+    hoursToSunrise = float(m[0])
+    hoursToSunset = float(m[1])
+    return hoursToSunrise, hoursToSunset
 
 if __name__ == "__main__":
+    print(getSunTimes())
     # saveImage('test')
     # logger = logging.getLogger('main')
     # image1, buffer1 = captureTestImage()
