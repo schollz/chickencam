@@ -67,7 +67,12 @@ $(function() {
                   </span></div>
                 </div>
 
-
+                <h2 id="now">5 minutes ago</h2>
+                <article class="card">
+                  <header>
+                    <img class="lazy" data-original="/static/data/current.jpg">
+                  </header>
+                </article>
 
                   {{range $i, $date := .Dates}}
                     <h2 id="{{ $date }}">{{ $date }}</h2>
