@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"sort"
 	"strings"
@@ -77,10 +78,12 @@ func main() {
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	router.GET("/", func(c *gin.Context) {
 		sortedDates, sortedNames := getData()
+		r := rand.New(rand.NewSource(99))
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Main website",
-			"Dates": sortedDates,
-			"Names": sortedNames,
+			"title":        "Main website",
+			"Dates":        sortedDates,
+			"Names":        sortedNames,
+			"RandomNumber": r.Int31(),
 		})
 	})
 	router.Run(":8081")
