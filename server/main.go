@@ -63,7 +63,7 @@ func getData() ([]string, []string) {
 	sortedDates := []string{}
 	sortedNames := []string{}
 	for _, d := range tosort {
-		sortedDates = append(sortedDates, d.date.Format("02/01/2006 3:04 PM"))
+		sortedDates = append(sortedDates, d.date.Format("01/02/2006 3:04 PM"))
 		sortedNames = append(sortedNames, chickenDateMap[d.date.String()])
 	}
 
