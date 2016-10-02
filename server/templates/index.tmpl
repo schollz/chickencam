@@ -79,7 +79,7 @@ $(function() {
                     <article class="card">
                       <header>
                         <img class="lazy" data-original="/static/data/{{index $.Names $i}}.jpg">
-                        <audio controls>
+                        <audio controls preload="none" class="lazy">
                           <source src="/static/data/{{index $.Names $i}}.wav" type="audio/wav">
                         Your browser does not support the audio element.
                         </audio>
