@@ -75,7 +75,7 @@ $(function() {
                 </article>
 
                   {{range $i, $date := .Dates}}
-                    <h2 id="{{ $date }}">{{ $date }}</h2>
+                    <h2 id="{{index $.Hashes $i}}">{{ $date }}</h2>
                     <article class="card">
                       <header>
                         <img class="lazy" data-original="/static/data/{{index $.Names $i}}.jpg">
