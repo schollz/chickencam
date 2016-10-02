@@ -13,9 +13,9 @@
 
 ## Setup
 
-### Setup Raspbery Pi
+### Setup Raspberry Pi
 
-Plug in the USB microphone, install new image of Raspbian, and attach the camera. Setup the camera using `raspi-config` and then setup the following.
+Plug in the USB microphone, install new image of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/), and attach the camera. Setup the camera using `raspi-config` and then setup the following.
 
 #### [Wifi](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
 
@@ -47,9 +47,11 @@ and change them to
     defaults.ctl.card 1
     defaults.pcm.card 1
 
-## Run chicken monitoring program
+### Install Go
 
-First install [Go1.7+](https://golang.org/dl/).
+Download [Go1.7+](https://golang.org/dl/) and install.
+
+## Run chicken monitoring program
 
 ```
 git clone https://github.com/schollz/chickencam.git
@@ -60,7 +62,7 @@ sudo python3 main.py
 
 ## Run chicken web server
 
-This can run on a separate computer. First install [Go1.7+](https://golang.org/dl/).
+This can run on a separate computer.
 
 ```
 git clone https://github.com/schollz/chickencam.git
