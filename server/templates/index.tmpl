@@ -6,7 +6,12 @@
 <link rel="stylesheet" href="/static/css/picnic.min.css">
 <script>
 $(function() {
-    $("img.lazy").lazyload();
+    $("img.lazy").lazyload({
+      threshold : 300,
+      event : "mouseover",
+       effect : "fadeIn",
+    });
+
 });
 </script>
 <link rel="apple-touch-icon" sizes="57x57" href="/static/img/apple-icon-57x57.png">
@@ -78,7 +83,7 @@ $(function() {
                     <h2 id="{{index $.Hashes $i}}">{{ $date }}</h2>
                     <article class="card">
                       <header>
-                        <img class="lazy" data-original="/static/data/{{index $.Names $i}}.jpg">
+                        <img class="lazy" data-original="/static/data/{{index $.Names $i}}.jpg" width="100%">
                         <audio controls preload="none" class="lazy">
                           <source src="/static/data/{{index $.Names $i}}.wav" type="audio/wav">
                         Your browser does not support the audio element.
