@@ -38,7 +38,7 @@ func getData() ([]string, []string, []string) {
 	jpgs := make(map[string]bool)
 	for _, f := range files {
 		name := f.Name()
-		if strings.Contains(f.Name(), ".wav") {
+		if strings.Contains(f.Name(), ".mp3") {
 			wavs[name[0:len(name)-4]] = true
 		}
 		if strings.Contains(f.Name(), ".jpg") {
