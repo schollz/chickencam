@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/contrib/renders/multitemplate"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,7 +32,7 @@ func (p timeSlice) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
-func getData(filterDate string) ([]string, []string, []string, []string, []string, map[string]int) {
+func getData(filterDate string) WebData {
 	files, _ := ioutil.ReadDir("./static/data")
 	wavs := make(map[string]bool)
 	jpgs := make(map[string]bool)
@@ -92,8 +92,25 @@ func getData(filterDate string) ([]string, []string, []string, []string, []strin
 	sortedDates = sortedDates[0:i]
 	sortedNames = sortedNames[0:i]
 	sortedHashes = sortedHashes[0:i]
-	fmt.Println(pictureCounts)
-	return sortedDates, sortedNames, sortedHashes, availableDates, parseableDates, pictureCounts
+	return WebData{SortedDates: sortedDates,
+		SortedNames:    sortedNames,
+		SortedHashes:   sortedHashes,
+		AvailableDates: availableDates,
+		ParseableDates: parseableDates,
+		PictureCounts:  pictureCounts,
+		RandomNumber:   rand.New(rand.NewSource(99)).Int31(),
+	}
+}
+
+type WebData struct {
+	Title          string
+	SortedDates    []string
+	SortedNames    []string
+	SortedHashes   []string
+	AvailableDates []string
+	ParseableDates []string
+	PictureCounts  map[string]int
+	RandomNumber   int32
 }
 
 func main() {
@@ -103,28 +120,22 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	router.GET("/", func(c *gin.Context) {
-		_, _, _, availableDates, parseableDates, counts := getData("")
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title":        "Main website",
-			"Dates":        availableDates,
-			"DateLinks":    parseableDates,
-			"Counts":       counts,
-			"RandomNumber": rand.New(rand.NewSource(99)).Int31(),
+		data := getData("")
+		data.SortedDates = []string{}
+		c.HTML(http.StatusOK, "base.tmpl", gin.H{
+			"title": "Main website",
+			"Data":  data,
 		})
 	})
 	router.GET("/date/*date", func(c *gin.Context) {
 		filterDate := c.Param("date")[1:]
-		sortedDates, sortedNames, sortedHashes, _, _, _ := getData(filterDate)
-		r := rand.New(rand.NewSource(99))
-		c.HTML(http.StatusOK, "day.tmpl", gin.H{
-			"title":        "Main website",
-			"Dates":        sortedDates,
-			"Names":        sortedNames,
-			"Hashes":       sortedHashes,
-			"RandomNumber": r.Int31(),
+		data := getData(filterDate)
+		data.ParseableDates = []string{}
+		c.HTML(http.StatusOK, "base.tmpl", gin.H{
+			"title": "Main website",
+			"Data":  data,
 		})
 	})
-	fmt.Println(getData(""))
 	router.Run(":8081")
 }
 
@@ -133,4 +144,14 @@ func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))[:7]
+}
+
+func createMyRender() multitemplate.Render {
+	r := multitemplate.New()
+	r.AddFromFiles("index", "base.html", "base.html")
+	r.AddFromFiles("article", "base.html", "article.html")
+	r.AddFromFiles("login", "base.html", "login.html")
+	r.AddFromFiles("dashboard", "base.html", "dashboard.html")
+
+	return r
 }
