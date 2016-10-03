@@ -75,23 +75,37 @@ func getData(filterDate string) WebData {
 	parseableDates := []string{}
 	foundDate := make(map[string]bool)
 	pictureCounts := make(map[string]int)
+	title := "Click on a link below to see what the chickens were up to!"
+
 	i := 0
 	for _, d := range tosort {
-		if len(filterDate) > 0 {
-			if filterDate != d.date.Format("01/02/2006") {
-				continue
-			}
-		}
-		sortedDates[i] = d.date.Format("3:04 PM")
-		sortedNames[i] = chickenDateMap[d.date.String()]
-		sortedHashes[i] = d.date.Format("20060102150405")
+
 		if _, ok := foundDate[d.date.Format("01/02/2006")]; !ok {
-			availableDates = append(availableDates, d.date.Format("January 02, 2006"))
+			prettyDate := d.date.Format("January 02, 2006")
+			if time.Now().Format("January 02, 2006") == prettyDate {
+				prettyDate = "Today"
+			}
+			availableDates = append(availableDates, prettyDate)
 			parseableDates = append(parseableDates, d.date.Format("01/02/2006"))
 			foundDate[d.date.Format("01/02/2006")] = true
 			pictureCounts[d.date.Format("01/02/2006")] = 0
 		}
 		pictureCounts[d.date.Format("01/02/2006")]++
+
+		if len(filterDate) > 0 {
+			if filterDate != d.date.Format("01/02/2006") {
+				continue
+			} else {
+				if filterDate == time.Now().Format("01/02/2006") {
+					title = "What have the chickens been up to today?"
+				} else {
+					title = "What have the chickens been up to on " + d.date.Format("January 02, 2006") + "?"
+				}
+			}
+		}
+		sortedDates[i] = d.date.Format("3:04 PM")
+		sortedNames[i] = chickenDateMap[d.date.String()]
+		sortedHashes[i] = d.date.Format("20060102150405")
 		if _, err := os.Stat(path.Join("static", "data", sortedHashes[i]+".txt")); err == nil {
 			b, _ := ioutil.ReadFile(path.Join("static", "data", sortedHashes[i]+".txt"))
 			var chickenDat ChickenData
@@ -104,7 +118,9 @@ func getData(filterDate string) WebData {
 	sortedDates = sortedDates[0:i]
 	sortedNames = sortedNames[0:i]
 	sortedHashes = sortedHashes[0:i]
-	return WebData{SortedDates: sortedDates,
+	return WebData{
+		Title:          title,
+		SortedDates:    sortedDates,
 		SortedNames:    sortedNames,
 		SortedHashes:   sortedHashes,
 		AvailableDates: availableDates,
@@ -145,14 +161,14 @@ func main() {
 		data := getData("")
 		data.SortedDates = []string{}
 		c.HTML(http.StatusOK, "base.tmpl", gin.H{
-			"title": "Main website",
-			"Data":  data,
+			"title":   "Main website",
+			"Data":    data,
+			"ListAll": true,
 		})
 	})
 	router.GET("/date/*date", func(c *gin.Context) {
 		filterDate := c.Param("date")[1:]
 		data := getData(filterDate)
-		data.ParseableDates = []string{}
 		c.HTML(http.StatusOK, "base.tmpl", gin.H{
 			"title": "Main website",
 			"Data":  data,

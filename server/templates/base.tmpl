@@ -34,18 +34,51 @@ $(function() {
 <script src="/static/js/bootstrap.min.js"></script>
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
 <script src="/static/js/toastr.min.js"></script>
+<style>
+body { padding-top: 70px; }
+</style>
 
 
 </head>
 <body>
 
 
+  <!-- Static navbar -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">ChickenCam</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pick a date <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              {{range $i, $val := .Data.ParseableDates}}
+                <li><a href="/date/{{ $val }}">{{index $.Data.AvailableDates $i}} ({{index $.Data.PictureCounts $val}} photos) </a></li>
+               {{ end }}
+
+
+            </ul>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+  </nav>
+
 
   <div class="container">
       <div class="row">
         <div class="col-sm-4">
           <h1>ChickenCam v. 2.0</h1>
-          <h2>What do chickens do all day?</h2>
+          <h2>{{$.Data.Title}}</h2>
           <img class="lazy" data-original="/static/img/chicken.png" width=100>
         </div>
         <div class="col-sm-6 col-sm-offset-2">
@@ -125,10 +158,12 @@ $(function() {
       </div>
 
       <div class="row">
+        {{ if $.ListAll }}
         {{range $i, $val := .Data.ParseableDates}}
         <div class="col-sm-6">
           <h2><a href="/date/{{ $val }}">{{index $.Data.AvailableDates $i}}</a> ({{index $.Data.PictureCounts $val}} photos)</h2>
         </div>
+         {{ end }}
          {{ end }}
       </div>
   </div>
