@@ -136,6 +136,19 @@ func main() {
 			"Data":  data,
 		})
 	})
+	router.POST("/update", func(c *gin.Context) {
+		notes := c.PostForm("notes")
+		egg := strings.Contains(c.DefaultPostForm("egg", ""), "on")
+		chicken := strings.Contains(c.DefaultPostForm("chicken", ""), "on")
+		id := c.PostForm("id")
+		c.JSON(200, gin.H{
+			"status":  "posted",
+			"egg":     egg,
+			"chicken": chicken,
+			"id":      id,
+			"notes":   notes,
+		})
+	})
 	router.Run(":8081")
 }
 
