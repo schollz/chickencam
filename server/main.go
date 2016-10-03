@@ -32,7 +32,7 @@ func (p timeSlice) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
-func getData() ([]string, []string, []string) {
+func getData(filterDate string) ([]string, []string, []string, []string, []string, map[string]int) {
 	files, _ := ioutil.ReadDir("./static/data")
 	wavs := make(map[string]bool)
 	jpgs := make(map[string]bool)
@@ -66,13 +66,34 @@ func getData() ([]string, []string, []string) {
 	sortedDates := make([]string, len(tosort))
 	sortedNames := make([]string, len(tosort))
 	sortedHashes := make([]string, len(tosort))
-	for i, d := range tosort {
-		sortedDates[i] = d.date.Format("01/02/2006 3:04 PM")
+	availableDates := []string{}
+	parseableDates := []string{}
+	foundDate := make(map[string]bool)
+	pictureCounts := make(map[string]int)
+	i := 0
+	for _, d := range tosort {
+		if len(filterDate) > 0 {
+			if filterDate != d.date.Format("01/02/2006") {
+				continue
+			}
+		}
+		sortedDates[i] = d.date.Format("3:04 PM")
 		sortedNames[i] = chickenDateMap[d.date.String()]
 		sortedHashes[i] = GetMD5Hash(sortedDates[i])
+		if _, ok := foundDate[d.date.Format("01/02/2006")]; !ok {
+			availableDates = append(availableDates, d.date.Format("January 02, 2006"))
+			parseableDates = append(parseableDates, d.date.Format("01/02/2006"))
+			foundDate[d.date.Format("01/02/2006")] = true
+			pictureCounts[d.date.Format("01/02/2006")] = 0
+		}
+		pictureCounts[d.date.Format("01/02/2006")]++
+		i++
 	}
-
-	return sortedDates, sortedNames, sortedHashes
+	sortedDates = sortedDates[0:i]
+	sortedNames = sortedNames[0:i]
+	sortedHashes = sortedHashes[0:i]
+	fmt.Println(pictureCounts)
+	return sortedDates, sortedNames, sortedHashes, availableDates, parseableDates, pictureCounts
 }
 
 func main() {
@@ -82,9 +103,20 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	router.GET("/", func(c *gin.Context) {
-		sortedDates, sortedNames, sortedHashes := getData()
-		r := rand.New(rand.NewSource(99))
+		_, _, _, availableDates, parseableDates, counts := getData("")
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title":        "Main website",
+			"Dates":        availableDates,
+			"DateLinks":    parseableDates,
+			"Counts":       counts,
+			"RandomNumber": rand.New(rand.NewSource(99)).Int31(),
+		})
+	})
+	router.GET("/date/*date", func(c *gin.Context) {
+		filterDate := c.Param("date")[1:]
+		sortedDates, sortedNames, sortedHashes, _, _, _ := getData(filterDate)
+		r := rand.New(rand.NewSource(99))
+		c.HTML(http.StatusOK, "day.tmpl", gin.H{
 			"title":        "Main website",
 			"Dates":        sortedDates,
 			"Names":        sortedNames,
@@ -92,8 +124,8 @@ func main() {
 			"RandomNumber": r.Int31(),
 		})
 	})
+	fmt.Println(getData(""))
 	router.Run(":8081")
-	fmt.Println(getData())
 }
 
 // GetMD5Hash from http://stackoverflow.com/questions/2377881/how-to-get-a-md5-hash-from-a-string-in-golang
