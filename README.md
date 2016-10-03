@@ -1,5 +1,6 @@
 # ChickenCam
 
+## Demo: [chickens.zackaryscholl.com](https://chickens.zackaryscholl.com)
 ![](https://raw.githubusercontent.com/schollz/hens/master/server/static/img/chicken.png)
 
 ## Requirements
@@ -56,6 +57,7 @@ Download [Go1.7+](https://golang.org/dl/) and install.
 ```
 git clone https://github.com/schollz/chickencam.git
 cd chickencam
+nano conf.py # edit SERVER_LOCATION with the your particular server
 go build -o sunset
 sudo python3 main.py
 ```
