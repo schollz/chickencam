@@ -20,7 +20,7 @@
 
 Plug in the USB microphone, install new image of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/), and attach the camera. Setup the camera using `raspi-config` and then setup the following.
 
-#### 2. Setup  [Wifi](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
+### 2. Setup  [Wifi](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
 
 Make sure this WiFi will work outside.
 
@@ -32,13 +32,13 @@ Make sure this WiFi will work outside.
     }
 
 
-#### 3. Download packages
+### 3. Download packages
 
 ```
 sudo apt-get install apcalc python3 python3-setuptools zsh openssh-server openssh-client tree git vim htop python3-pyaudio python3-pil python3-numpy python3-rpio.gpio lame imagemagick
 ```
 
-#### 4. [Setup audio](http://raspberrypi.stackexchange.com/questions/37177/best-way-to-setup-usb-mic-as-system-default-on-raspbian-jessie)
+### 4. [Setup audio](http://raspberrypi.stackexchange.com/questions/37177/best-way-to-setup-usb-mic-as-system-default-on-raspbian-jessie)
 
 `sudo nano /usr/share/alsa/alsa.conf` scroll down until you find the lines
 
@@ -60,9 +60,8 @@ Here's mine:
 
 ![](https://raw.githubusercontent.com/schollz/chickencam/master/server/static/img/enclosure.jpg)
 
-## Run
 
-### Start chicken monitoring
+### 7. Start chicken monitoring
 
 On the Raspberry Pi, do the following:
 
@@ -74,7 +73,7 @@ go build -o sunset
 sudo python3 main.py
 ```
 
-### Start web server
+### 8. Start web server
 
 This should be done on the server (which can also be the raspberry pi):
 
@@ -84,3 +83,5 @@ cd chickencam/server
 go build
 ./server
 ```
+
+### 9. Enjoy your chickens popping in to say hello
