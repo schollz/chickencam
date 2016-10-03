@@ -63,7 +63,7 @@ $(function() {
       <div class="row">
         {{range $i, $date := .Data.SortedDates}}
         <div class="col-sm-6 col-md-4" id="{{index $.Data.SortedHashes $i}}">
-          <div class="panel panel-primary">
+          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ $dat := index $.Data.Chicken $i}} {{ $length := len $dat}} {{ if eq $length 0 }}panel-primary{{ else }}panel-success{{ end }} ">
 
             <div class="panel-heading">
              <h3 class="panel-title"><a href="#{{index $.Data.SortedHashes $i}}">{{ $date }}</a></h3>
@@ -84,17 +84,17 @@ $(function() {
                    <br>
                    <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
                    <label class="form-check-label">
-                     <input type="checkbox" class="form-check-input" name="chicken">
+                     <input type="checkbox" class="form-check-input" name="chicken" {{ $dat := index $.Data.Chicken $i}} {{ $length := len $dat}}{{ if eq $length 0 }}{{ else }}checked{{ end }} >
                      Chicken seen?
                    </label>
                    <label class="form-check-label">
-                     <input type="checkbox" class="form-check-input" name="egg">
+                     <input type="checkbox" class="form-check-input" name="egg" {{ $dat := index $.Data.Egg $i}} {{ $length := len $dat}}{{ if eq $length 0 }}{{ else }}checked{{ end }} >
                      Chicken laying egg?
                    </label>
                  </div>
                  <div class="form-group col-sm-8">
                    <label for="exampleTextarea">Other notes:</label>
-                   <textarea class="form-control" name="notes" rows="2"></textarea>
+                   <textarea class="form-control" name="notes" rows="2">{{index $.Data.Notes $i}}</textarea>
                  </div>
                  <div class="form-group col-sm-12">
                    <div class="form-check">
@@ -146,8 +146,18 @@ $(function () {
             success: function (data) {
               console.log($(this).serialize());
                console.log(data); // show response from the php script.
-               toastr.success('ID ' + data.id + " updated", 'Thanks!', {timeOut: 1000})
+               toastr.success('ID ' + data.id + " updated", 'Thanks!', {timeOut: 3000})
+               if (data.chicken == true) {
+                 $('#panel'+data.id).removeClass('panel-primary').addClass('panel-success');
+               } else {
+                 $('#panel'+data.id).removeClass('panel-success').addClass('panel-primary');                 
+               }
+            },
+            error: function (data) {
+
+              toastr.error('Something went wrong!', 'Uh oh!', {timeOut: 3000})
             }
+
         });
         e.preventDefault();
     });

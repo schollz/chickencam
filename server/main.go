@@ -3,9 +3,13 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
+	"os"
+	"path"
 	"sort"
 	"strings"
 	"time"
@@ -66,6 +70,9 @@ func getData(filterDate string) WebData {
 	sortedDates := make([]string, len(tosort))
 	sortedNames := make([]string, len(tosort))
 	sortedHashes := make([]string, len(tosort))
+	notes := make([]string, len(tosort))
+	chicken := make([]string, len(tosort))
+	egg := make([]string, len(tosort))
 	availableDates := []string{}
 	parseableDates := []string{}
 	foundDate := make(map[string]bool)
@@ -79,7 +86,7 @@ func getData(filterDate string) WebData {
 		}
 		sortedDates[i] = d.date.Format("3:04 PM")
 		sortedNames[i] = chickenDateMap[d.date.String()]
-		sortedHashes[i] = GetMD5Hash(sortedDates[i])
+		sortedHashes[i] = d.date.Format("20060102150405")
 		if _, ok := foundDate[d.date.Format("01/02/2006")]; !ok {
 			availableDates = append(availableDates, d.date.Format("January 02, 2006"))
 			parseableDates = append(parseableDates, d.date.Format("01/02/2006"))
@@ -87,6 +94,18 @@ func getData(filterDate string) WebData {
 			pictureCounts[d.date.Format("01/02/2006")] = 0
 		}
 		pictureCounts[d.date.Format("01/02/2006")]++
+		if _, err := os.Stat(path.Join("static", "data", sortedHashes[i]+".txt")); err == nil {
+			b, _ := ioutil.ReadFile(path.Join("static", "data", sortedHashes[i]+".txt"))
+			var chickenDat ChickenData
+			json.Unmarshal(b, &chickenDat)
+			notes[i] = chickenDat.Notes
+			if chickenDat.Egg {
+				egg[i] = "checked"
+			}
+			if chickenDat.Chicken {
+				chicken[i] = "checked"
+			}
+		}
 		i++
 	}
 	sortedDates = sortedDates[0:i]
@@ -99,6 +118,9 @@ func getData(filterDate string) WebData {
 		ParseableDates: parseableDates,
 		PictureCounts:  pictureCounts,
 		RandomNumber:   rand.New(rand.NewSource(99)).Int31(),
+		Notes:          notes,
+		Chicken:        chicken,
+		Egg:            egg,
 	}
 }
 
@@ -109,8 +131,18 @@ type WebData struct {
 	SortedHashes   []string
 	AvailableDates []string
 	ParseableDates []string
+	Notes          []string
+	Chicken        []string
+	Egg            []string
 	PictureCounts  map[string]int
+	Info           map[string]ChickenData
 	RandomNumber   int32
+}
+
+type ChickenData struct {
+	Notes   string
+	Egg     bool
+	Chicken bool
 }
 
 func main() {
@@ -141,8 +173,13 @@ func main() {
 		egg := strings.Contains(c.DefaultPostForm("egg", ""), "on")
 		chicken := strings.Contains(c.DefaultPostForm("chicken", ""), "on")
 		id := c.PostForm("id")
+		chickenData := ChickenData{Notes: notes, Egg: egg, Chicken: chicken}
+		b, _ := json.Marshal(chickenData)
+		ioutil.WriteFile(path.Join("static", "data", id+".txt"), b, 0644)
+		log.Printf("Wrote JSON data to %s\n", path.Join("static", "data", id+".txt"))
 		c.JSON(200, gin.H{
 			"status":  "posted",
+			"success": true,
 			"egg":     egg,
 			"chicken": chicken,
 			"id":      id,
