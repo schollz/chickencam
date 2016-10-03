@@ -166,6 +166,16 @@ func main() {
 			"ListAll": true,
 		})
 	})
+	router.GET("/about", func(c *gin.Context) {
+		data := getData("")
+		data.SortedDates = []string{}
+		data.Title = ""
+		c.HTML(http.StatusOK, "base.tmpl", gin.H{
+			"title":   "Main website",
+			"Data":    data,
+			"ListAll": true,
+		})
+	})
 	router.GET("/date/*date", func(c *gin.Context) {
 		filterDate := c.Param("date")[1:]
 		data := getData(filterDate)

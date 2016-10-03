@@ -58,8 +58,8 @@ body { padding-top: 70px; }
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/">Home</a></li>
-          <li class="dropdown">
+          <li {{ if $.ListAll }}class="active"{{end}}><a href="/">Home</a></li>
+          <li class="dropdown" {{ if $.ListAll }}{{else}}class="active"{{end}}>
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pick a date <span class="caret"></span></a>
             <ul class="dropdown-menu">
               {{range $i, $val := .Data.ParseableDates}}
@@ -69,6 +69,7 @@ body { padding-top: 70px; }
 
             </ul>
           </li>
+          <li {{ if eq $.Data.Title  "" }}class="active"{{ end }}><a href="/about">About</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
@@ -80,6 +81,11 @@ body { padding-top: 70px; }
         <div class="col-sm-6">
           <h1>ChickenCam v. 2.0</h1>
           <h2>{{$.Data.Title}}</h2>
+          {{ if eq $.Data.Title  "" }}
+          <h2>About</h2>
+          <p class="lead">ChickenCam was created because I feared the chickens were plotting against me and I need to watch their every move.</p>
+          <p class="lead">If you'd like to build one yourself, click <a href="https://github.com/schollz/chickencam">this blue text</a>.</p>
+          {{ end }}
           {{ if $.ListAll }}{{ else }}
           <p class="lead">See and listen to chickens (no video).</p>
           <p class="lead">If you can, please help to classify the images!</p>
