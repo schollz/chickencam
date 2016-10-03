@@ -70,8 +70,7 @@ func getData(filterDate string) WebData {
 	sortedNames := make([]string, len(tosort))
 	sortedHashes := make([]string, len(tosort))
 	notes := make([]string, len(tosort))
-	chicken := make([]string, len(tosort))
-	egg := make([]string, len(tosort))
+	activity := make([]string, len(tosort))
 	availableDates := []string{}
 	parseableDates := []string{}
 	foundDate := make(map[string]bool)
@@ -98,12 +97,7 @@ func getData(filterDate string) WebData {
 			var chickenDat ChickenData
 			json.Unmarshal(b, &chickenDat)
 			notes[i] = chickenDat.Notes
-			if chickenDat.Egg {
-				egg[i] = "checked"
-			}
-			if chickenDat.Chicken {
-				chicken[i] = "checked"
-			}
+			activity[i] = chickenDat.Activity
 		}
 		i++
 	}
@@ -118,8 +112,7 @@ func getData(filterDate string) WebData {
 		PictureCounts:  pictureCounts,
 		RandomNumber:   rand.New(rand.NewSource(99)).Int31(),
 		Notes:          notes,
-		Chicken:        chicken,
-		Egg:            egg,
+		Activity:       activity,
 	}
 }
 
@@ -131,17 +124,15 @@ type WebData struct {
 	AvailableDates []string
 	ParseableDates []string
 	Notes          []string
-	Chicken        []string
-	Egg            []string
+	Activity       []string
 	PictureCounts  map[string]int
 	Info           map[string]ChickenData
 	RandomNumber   int32
 }
 
 type ChickenData struct {
-	Notes   string
-	Egg     bool
-	Chicken bool
+	Notes    string
+	Activity string
 }
 
 func main() {
@@ -169,21 +160,29 @@ func main() {
 	})
 	router.POST("/update", func(c *gin.Context) {
 		notes := c.PostForm("notes")
-		egg := strings.Contains(c.DefaultPostForm("egg", ""), "on")
-		chicken := strings.Contains(c.DefaultPostForm("chicken", ""), "on")
+		activity := c.PostForm("activity")
 		id := c.PostForm("id")
-		chickenData := ChickenData{Notes: notes, Egg: egg, Chicken: chicken}
-		b, _ := json.Marshal(chickenData)
-		ioutil.WriteFile(path.Join("static", "data", id+".txt"), b, 0644)
-		log.Printf("Wrote JSON data to %s\n", path.Join("static", "data", id+".txt"))
-		c.JSON(200, gin.H{
-			"status":  "posted",
-			"success": true,
-			"egg":     egg,
-			"chicken": chicken,
-			"id":      id,
-			"notes":   notes,
-		})
+		if len(id) > 0 {
+			chickenData := ChickenData{Notes: notes, Activity: activity}
+			b, _ := json.Marshal(chickenData)
+			ioutil.WriteFile(path.Join("static", "data", id+".txt"), b, 0644)
+			log.Printf("Wrote JSON data to %s\n", path.Join("static", "data", id+".txt"))
+			c.JSON(200, gin.H{
+				"status":   "posted",
+				"success":  true,
+				"activity": activity,
+				"id":       id,
+				"notes":    notes,
+			})
+		} else {
+			c.JSON(500, gin.H{
+				"status":   "posted",
+				"success":  false,
+				"activity": activity,
+				"id":       id,
+				"notes":    notes,
+			})
+		}
 	})
 	router.Run(":8081")
 }

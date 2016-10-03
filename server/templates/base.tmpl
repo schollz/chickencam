@@ -64,8 +64,9 @@ $(function() {
 
       <div class="row">
         {{range $i, $date := .Data.SortedDates}}
+        {{ $activity := index $.Data.Activity $i}}
         <div class="col-sm-6 col-md-4" id="{{index $.Data.SortedHashes $i}}">
-          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ $dat := index $.Data.Chicken $i}} {{ $length := len $dat}} {{ if eq $length 0 }}panel-primary{{ else }}panel-success{{ end }} ">
+          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ if eq $activity ""}}panel-primary{{ else if eq $activity "egg"}}panel-success{{ else if eq $activity "chicken"}}panel-warning{{ end }}">
 
             <div class="panel-heading">
              <h3 class="panel-title"><a href="#{{index $.Data.SortedHashes $i}}">{{ $date }}</a></h3>
@@ -82,17 +83,28 @@ $(function() {
            <div class="panel-footer">
              <form action="/update" method="post" id="form{{index $.Data.SortedHashes $i}}">
                <div class="row">
+                 <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
                  <div class="form-check col-sm-4">
-                   <br>
-                   <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
-                   <label class="form-check-label">
-                     <input type="checkbox" class="form-check-input" name="chicken" {{ $dat := index $.Data.Chicken $i}} {{ $length := len $dat}}{{ if eq $length 0 }}{{ else }}checked{{ end }} >
-                     Chicken seen?
-                   </label>
-                   <label class="form-check-label">
-                     <input type="checkbox" class="form-check-input" name="egg" {{ $dat := index $.Data.Egg $i}} {{ $length := len $dat}}{{ if eq $length 0 }}{{ else }}checked{{ end }} >
-                     Chicken laying egg?
-                   </label>
+                   <fieldset class="form-group">
+                     <div class="form-check">
+                       <label class="form-check-label">
+                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios1" value=""  {{ if eq $activity ""}}checked{{ end }}>
+                         None
+                       </label>
+                     </div>
+                     <div class="form-check">
+                     <label class="form-check-label">
+                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios2" value="chicken" {{ if eq $activity "chicken"}}checked{{ end }}>
+                         In view
+                       </label>
+                     </div>
+                     <div class="form-check disabled">
+                     <label class="form-check-label">
+                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios3" value="egg" {{ if eq $activity "egg"}}checked{{ end }}>
+                         Laying egg
+                       </label>
+                     </div>
+                   </fieldset>
                  </div>
                  <div class="form-group col-sm-8">
                    <label for="exampleTextarea">Other notes:</label>
@@ -138,10 +150,14 @@ $(function () {
               console.log($(this).serialize());
                console.log(data); // show response from the php script.
                toastr.success('ID ' + data.id + " updated", 'Thanks!', {timeOut: 3000})
-               if (data.chicken == true) {
-                 $('#panel'+data.id).removeClass('panel-primary').addClass('panel-success');
-               } else {
-                 $('#panel'+data.id).removeClass('panel-success').addClass('panel-primary');
+               if (data.activity == "") {
+                 $('#panel'+data.id).removeClass().addClass('panel panel-primary');
+               }
+               if (data.activity == "egg") {
+                 $('#panel'+data.id).removeClass().addClass('panel panel-success');
+               }
+               if (data.activity == "chicken") {
+                 $('#panel'+data.id).removeClass().addClass('panel panel-warning');
                }
             },
             error: function (data) {
