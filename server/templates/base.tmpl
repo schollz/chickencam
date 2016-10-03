@@ -77,12 +77,16 @@ body { padding-top: 70px; }
 
   <div class="container">
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-6">
           <h1>ChickenCam v. 2.0</h1>
           <h2>{{$.Data.Title}}</h2>
+          {{ if $.ListAll }}{{ else }}
+          <p class="lead">See and listen to chickens (no video).</p>
+          <p class="lead">If you can, please help to classify the images!</p>
+          {{end}}
           <img class="lazy" data-original="/static/img/chicken.png" width=100>
         </div>
-        <div class="col-sm-6 col-sm-offset-2">
+        <div class="col-sm-6">
           <div class="panel panel-primary">
 
             <div class="panel-heading">
