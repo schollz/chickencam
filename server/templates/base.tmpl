@@ -79,7 +79,7 @@ body { padding-top: 70px; }
   <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <h1>ChickenCam v. 2.0</h1>
+          <h1><img class="lazy" data-original="/static/img/chicken.png" width=100>ChickenCam</h1>
           <h2>{{$.Data.Title}}</h2>
           {{ if eq $.Data.Title  "" }}
           <h2>About</h2>
@@ -88,15 +88,15 @@ body { padding-top: 70px; }
           {{ end }}
           {{ if $.ListAll }}{{ else }}
           <p class="lead">See and listen to chickens (no video).</p>
-          <p class="lead">If you can, please help to classify the images!</p>
+          <p class="lead">The chickens need your help to classify the images! Check the button which best represents the image and leave a note about which chicken is in the picture.</p>
           {{end}}
-          <img class="lazy" data-original="/static/img/chicken.png" width=100>
+
         </div>
         <div class="col-sm-6">
           <div class="panel panel-primary">
 
             <div class="panel-heading">
-             <h3 class="panel-title">Live</h3>
+             <h3 class="panel-title">Live <A HREF="javascript:history.go(0)">(Click to refresh)</A></h3>
             </div>
 
            <div class="panel-body">
@@ -110,7 +110,7 @@ body { padding-top: 70px; }
         {{range $i, $date := .Data.SortedDates}}
         {{ $activity := index $.Data.Activity $i}}
         <div class="col-sm-6 col-md-4" id="{{index $.Data.SortedHashes $i}}">
-          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ if eq $activity ""}}panel-primary{{ else if eq $activity "egg"}}panel-success{{ else if eq $activity "chicken"}}panel-warning{{ end }}">
+          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ if eq $activity ""}}{{ else if eq $activity "chicken"}}panel-warning{{ else if eq $activity "egg"}}panel-danger{{ else if eq $activity "notinview"}}panel-info{{ end }}">
 
             <div class="panel-heading">
              <h3 class="panel-title"><a href="#{{index $.Data.SortedHashes $i}}">{{ $date }}</a></h3>
@@ -128,11 +128,17 @@ body { padding-top: 70px; }
              <form action="/update" method="post" id="form{{index $.Data.SortedHashes $i}}">
                <div class="row">
                  <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
-                 <div class="form-check col-sm-4">
+                 <div class="form-check col-sm-5">
                    <fieldset class="form-group">
                      <div class="form-check">
                        <label class="form-check-label">
                          <input type="radio" class="form-check-input" name="activity" id="optionsRadios1" value=""  {{ if eq $activity ""}}checked{{ end }}>
+                         Unclassified
+                       </label>
+                     </div>
+                     <div class="form-check">
+                       <label class="form-check-label">
+                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios1" value="notinview"  {{ if eq $activity "notinview"}}checked{{ end }}>
                          Not in view
                        </label>
                      </div>
@@ -150,9 +156,9 @@ body { padding-top: 70px; }
                      </div>
                    </fieldset>
                  </div>
-                 <div class="form-group col-sm-8">
-                   <label for="exampleTextarea">Other notes:</label>
-                   <textarea class="form-control" name="notes" rows="2">{{index $.Data.Notes $i}}</textarea>
+                 <div class="form-group col-sm-7">
+                   <label for="exampleTextarea">Chicken notes:</label>
+                   <textarea class="form-control" name="notes" rows="3">{{index $.Data.Notes $i}}</textarea>
                  </div>
                  <div class="form-group col-sm-12">
                    <div class="form-check">
@@ -196,14 +202,17 @@ $(function () {
               console.log($(this).serialize());
                console.log(data); // show response from the php script.
                toastr.success('ID ' + data.id + " updated", 'Thanks!', {timeOut: 3000})
-               if (data.activity == "") {
-                 $('#panel'+data.id).removeClass().addClass('panel panel-primary');
+               if (data.activity == "notinview") {
+                 $('#panel'+data.id).removeClass().addClass('panel panel-info');
                }
                if (data.activity == "egg") {
-                 $('#panel'+data.id).removeClass().addClass('panel panel-success');
+                 $('#panel'+data.id).removeClass().addClass('panel panel-danger');
                }
                if (data.activity == "chicken") {
                  $('#panel'+data.id).removeClass().addClass('panel panel-warning');
+               }
+               if (data.activity == "") {
+                 $('#panel'+data.id).removeClass().addClass('panel');
                }
             },
             error: function (data) {
