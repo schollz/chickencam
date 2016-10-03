@@ -1,7 +1,0 @@
-{{ define "content" }}
-
-{{range $i, $val := .Data.ParseableDates}}
-  <h2><a href="/date/{{ $val }}">{{index $.Data.AvailableDates $i}}</a> ({{index $.Data.PictureCounts $val}} photos)</h2>
- {{ end }}
-
-{{ end }}

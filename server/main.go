@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/contrib/renders/multitemplate"
 	"github.com/gin-gonic/gin"
 )
 
@@ -194,14 +193,4 @@ func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))[:7]
-}
-
-func createMyRender() multitemplate.Render {
-	r := multitemplate.New()
-	r.AddFromFiles("index", "base.html", "base.html")
-	r.AddFromFiles("article", "base.html", "article.html")
-	r.AddFromFiles("login", "base.html", "login.html")
-	r.AddFromFiles("dashboard", "base.html", "dashboard.html")
-
-	return r
 }
