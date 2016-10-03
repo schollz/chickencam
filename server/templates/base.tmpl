@@ -44,7 +44,9 @@ $(function() {
   <div class="container">
       <div class="row">
         <div class="col-sm-4">
-          <h1>Some text</h1>
+          <h1>ChickenCam v. 2.0</h1>
+          <h2>What do chickens do all day?</h2>
+          <img class="lazy" data-original="/static/img/chicken.png" width=100>
         </div>
         <div class="col-sm-6 col-sm-offset-2">
           <div class="panel panel-primary">
@@ -54,7 +56,7 @@ $(function() {
             </div>
 
            <div class="panel-body">
-             <img class="lazy" data-original="/static/data/current.jpg" width="100%">
+             <img class="lazy" data-original="/static/data/current.jpg?{{ $.Data.RandomNumber }}" width="100%">
            </div>
           </div>
         </div>
@@ -109,30 +111,19 @@ $(function() {
         </div>
         {{ end }}
       </div>
+
+      <div class="row">
+        {{range $i, $val := .Data.ParseableDates}}
+        <div class="col-sm-6">
+          <h2><a href="/date/{{ $val }}">{{index $.Data.AvailableDates $i}}</a> ({{index $.Data.PictureCounts $val}} photos)</h2>
+        </div>
+         {{ end }}
+      </div>
   </div>
 
 
 
 
-
-
-
-            {{ $length := len .Data.ParseableDates }} {{ if eq $length 0 }}
-            <aside class="full fourth-1200">
-                <h2>Timeline</h2>
-                <div class="links flex two three-500 five-800 one-1000">
-                </div><a class="top pseudo button" href="#home" tabindex="-1">▲
-                Up you go ▲</a>
-            </aside>
-            {{ end }}
-
-
-                {{range $i, $val := .Data.ParseableDates}}
-                <!-- This is ignored if index -->
-                <div><span>
-                  <h2><a href="/date/{{ $val }}">{{index $.Data.AvailableDates $i}}</a> ({{index $.Data.PictureCounts $val}} photos)</h2>
-                </span></div>
-                 {{ end }}
 
 
 <script>
@@ -150,7 +141,7 @@ $(function () {
                if (data.chicken == true) {
                  $('#panel'+data.id).removeClass('panel-primary').addClass('panel-success');
                } else {
-                 $('#panel'+data.id).removeClass('panel-success').addClass('panel-primary');                 
+                 $('#panel'+data.id).removeClass('panel-success').addClass('panel-primary');
                }
             },
             error: function (data) {
