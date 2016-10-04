@@ -110,8 +110,8 @@ func getData(filterDate string) WebData {
 			b, _ := ioutil.ReadFile(path.Join("static", "data", sortedHashes[i]+".txt"))
 			var chickenDat ChickenData
 			json.Unmarshal(b, &chickenDat)
-			notes[i] = chickenDat.Notes
-			activity[i] = chickenDat.Activity
+			notes[i] = ""
+			activity[i] = ""
 		}
 		i++
 	}
@@ -147,8 +147,9 @@ type WebData struct {
 }
 
 type ChickenData struct {
-	Notes    string
-	Activity string
+	Presence  string
+	Egglaying bool
+	Face      bool
 }
 
 func main() {
@@ -185,28 +186,40 @@ func main() {
 		})
 	})
 	router.POST("/update", func(c *gin.Context) {
-		notes := c.PostForm("notes")
-		activity := c.PostForm("activity")
+		presence := c.PostForm("presence")
+		egg := c.PostForm("egg")
+		face := c.PostForm("face")
 		id := c.PostForm("id")
-		if len(id) > 0 {
-			chickenData := ChickenData{Notes: notes, Activity: activity}
+		if len(id) > 0 && len(presence) > 0 {
+			chickenData := ChickenData{Presence: presence, Egglaying: strings.Contains(egg, "on"), Face: strings.Contains(face, "on")}
 			b, _ := json.Marshal(chickenData)
 			ioutil.WriteFile(path.Join("static", "data", id+".txt"), b, 0644)
 			log.Printf("Wrote JSON data to %s\n", path.Join("static", "data", id+".txt"))
 			c.JSON(200, gin.H{
-				"status":   "posted",
+				"status":   "Posted to ID" + id,
 				"success":  true,
-				"activity": activity,
+				"presence": presence,
+				"egg":      strings.Contains(egg, "on"),
+				"face":     strings.Contains(face, "on"),
 				"id":       id,
-				"notes":    notes,
+			})
+		} else if len(presence) == 0 {
+			c.JSON(200, gin.H{
+				"status":   "Must select whether chickens are in frame",
+				"success":  false,
+				"presence": presence,
+				"egg":      egg,
+				"face":     face,
+				"id":       id,
 			})
 		} else {
-			c.JSON(500, gin.H{
-				"status":   "posted",
+			c.JSON(200, gin.H{
+				"status":   "Unknown error",
 				"success":  false,
-				"activity": activity,
+				"presence": presence,
+				"egg":      egg,
+				"face":     face,
 				"id":       id,
-				"notes":    notes,
 			})
 		}
 	})
