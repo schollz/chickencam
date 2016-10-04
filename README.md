@@ -1,4 +1,4 @@
-# ChickenCam in 10 easy steps
+# Raspberry Pi ChickenCam in 10 easy steps
 
 ## Demo: [watchchickens.online](https://watchchickens.online)
 ![](https://raw.githubusercontent.com/schollz/hens/master/server/static/img/chicken.png)
