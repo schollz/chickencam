@@ -137,7 +137,7 @@ body { padding-top: 70px; }
                  <img src="/static/img/1f414.png" height="24pt" id="{{index $.Data.SortedHashes $i}}multiple2" {{if eq $presence "multiple"}}{{else}}style="display: none;"{{end}}></img>
                  <img src="/static/img/egg.png" height="24pt" id="{{index $.Data.SortedHashes $i}}egg" {{if $egg }}{{else}}style="display: none;"{{end}}></img>
                  <img src="/static/img/1f642.png" height="24pt" id="{{index $.Data.SortedHashes $i}}face" {{if $face }}{{else}}style="display: none;"{{end}}></img>
-                 <a href="#"><span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}" {{ if eq $presence  "" }}style="display: none;"{{else}}style="color:white"{{end}}></span></a>
+                 <a href="#"><span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}" style="color:white"></span></a>
              </span>
              </h3>
             </div>
