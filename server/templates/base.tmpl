@@ -121,7 +121,9 @@ body { padding-top: 70px; }
 
       <div class="row">
         {{range $i, $date := .Data.SortedDates}}
-        {{ $activity := index $.Data.Activity $i}}
+        {{ $presence := index $.Data.Presence $i}}
+        {{ $egg := index $.Data.Egg $i}}
+        {{ $face := index $.Data.Face $i}}
         <div class="col-sm-6 col-md-4" id="{{index $.Data.SortedHashes $i}}">
           <div id="panel{{index $.Data.SortedHashes $i}}" class="panel panel-primary">
 
@@ -138,36 +140,39 @@ body { padding-top: 70px; }
            </div>
 
            <div class="panel-footer">
-             <div id="info{{index $.Data.SortedHashes $i}}"  style="display: none;">
-               <span class="lead" id="infotext{{index $.Data.SortedHashes $i}}">White Chicken, laying egg</span>
+             <div id="info{{index $.Data.SortedHashes $i}}"  {{ if eq $presence  "" }}style="display: none;"{{else}}{{end}}>
+               <span class="lead" id="infotext{{index $.Data.SortedHashes $i}}">
+                 {{if eq $presence "none"}}No chicken{{end}}{{if eq $presence "brown"}}Brown{{end}}{{if eq $presence "white"}}White{{end}}{{if eq $presence "multiple"}}2+{{end}}{{ if $egg}} laying egg{{end}}{{ if $face}}, face visible{{end}}
+
+               </span>
                  <a href="#"><span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}"></span></a>
              </div>
-             <form action="/update" method="post" id="form{{index $.Data.SortedHashes $i}}">
+             <form action="/update" method="post" id="form{{index $.Data.SortedHashes $i}}" {{ if eq $presence  "" }}{{else}}style="display: none;"{{end}}>
                <div class="row">
                  <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
                  <div class="form-check col-xs-5">
-                   <fieldset class="form-group">
+                   <fieldset class="form-group" >
                      <div class="form-check">
                        <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios0" value="none">
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios0" value="none" {{if eq $presence "none"}}checked{{end}}>
                          No chicken
                        </label>
                      </div>
                      <div class="form-check">
                        <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios1" value="white">
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios1" value="white" {{if eq $presence "white"}}checked{{end}}>
                          White chicken
                        </label>
                      </div>
                      <div class="form-check">
                      <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios2" value="brown">
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios2" value="brown" {{if eq $presence "brown"}}checked{{end}}>
                          Brown chicken
                        </label>
                      </div>
                      <div class="form-check disabled">
                      <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios3" value="multiple">
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios3" value="multiple" {{if eq $presence "multiple"}}checked{{end}}>
                          2+ chickens
                        </label>
                      </div>
@@ -176,12 +181,12 @@ body { padding-top: 70px; }
                  <div class="form-group col-xs-7">
                    <div class="checkbox">
                      <label>
-                       <input type="checkbox" name="egg"> Egg-laying is occuring
+                       <input type="checkbox" name="egg" {{if $egg}}checked{{end}}> Egg-laying is occuring
                      </label>
                    </div>
                    <div class="checkbox">
                      <label>
-                       <input type="checkbox" name="face"> Face is visible
+                       <input type="checkbox" name="face" {{if $face}}checked{{end}}> Face is visible
                      </label>
                    </div>
                    <div class="form-check">
@@ -241,7 +246,7 @@ $(function () {
                 $("#form"+data.id).css("display","none");
                 $("#info"+data.id).css("display","inline");
                 $("#infotext"+data.id).html(data.status)
-                 toastr.success(data.status, 'Thanks!', {timeOut: 3000})
+                toastr.success(data.status, 'Thanks!', {timeOut: 3000})
               } else {
                 toastr.error(data.status, 'Uh oh!', {timeOut: 3000})
               }

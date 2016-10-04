@@ -69,8 +69,9 @@ func getData(filterDate string) WebData {
 	sortedDates := make([]string, len(tosort))
 	sortedNames := make([]string, len(tosort))
 	sortedHashes := make([]string, len(tosort))
-	notes := make([]string, len(tosort))
-	activity := make([]string, len(tosort))
+	presence := make([]string, len(tosort))
+	egg := make([]bool, len(tosort))
+	face := make([]bool, len(tosort))
 	availableDates := []string{}
 	parseableDates := []string{}
 	foundDate := make(map[string]bool)
@@ -110,8 +111,9 @@ func getData(filterDate string) WebData {
 			b, _ := ioutil.ReadFile(path.Join("static", "data", sortedHashes[i]+".txt"))
 			var chickenDat ChickenData
 			json.Unmarshal(b, &chickenDat)
-			notes[i] = ""
-			activity[i] = ""
+			presence[i] = chickenDat.Presence
+			egg[i] = chickenDat.Egglaying
+			face[i] = chickenDat.Face
 		}
 		i++
 	}
@@ -127,8 +129,9 @@ func getData(filterDate string) WebData {
 		ParseableDates: parseableDates,
 		PictureCounts:  pictureCounts,
 		RandomNumber:   rand.New(rand.NewSource(99)).Int31(),
-		Notes:          notes,
-		Activity:       activity,
+		Presence:       presence,
+		Egg:            egg,
+		Face:           face,
 	}
 }
 
@@ -139,8 +142,9 @@ type WebData struct {
 	SortedHashes   []string
 	AvailableDates []string
 	ParseableDates []string
-	Notes          []string
-	Activity       []string
+	Presence       []string
+	Egg            []bool
+	Face           []bool
 	PictureCounts  map[string]int
 	Info           map[string]ChickenData
 	RandomNumber   int32
