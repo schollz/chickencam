@@ -84,6 +84,7 @@ body { padding-top: 70px; }
           <h2>{{$.Data.Title}}</h2>
           {{ if eq $.Data.Title  "" }}
           <p class="lead">ChickenCam was created because I feared the chickens were plotting against me.</p>
+          <p class="lead">The ChickenCam was using high-tech electronics and 3D materials, as shown in the image.</p>
           <p class="lead">If you are worried about the chickens in your coop, click <a href="https://github.com/schollz/chickencam">this blue text</a> to learn how to make your own ChickenCam.</p>
           {{ end }}
           {{ if $.ListAll }}{{ else }}
@@ -94,14 +95,26 @@ body { padding-top: 70px; }
         </div>
         <div class="col-sm-6">
           <div class="panel panel-primary">
-
+            {{ if eq $.Data.Title  "" }}
             <div class="panel-heading">
-             <h3 class="panel-title">Live (updates every 15 seconds during the day)</h3>
+             <h3 class="panel-title">ChickenCam</h3>
             </div>
 
            <div class="panel-body">
-             <img id="liveImage" src="/static/data/current.jpg?{{ $.Data.RandomNumber }}" width="100%">
+             <img  src="/static/img/enclosure.jpg" width="100%">
            </div>
+           {{ else }}
+           <div class="panel-heading">
+            <h3 class="panel-title">Live (updates every 15 seconds during the day)</h3>
+           </div>
+
+          <div class="panel-body">
+            <img id="liveImage" src="/static/data/current.jpg?{{ $.Data.RandomNumber }}" width="100%">
+          </div>
+           {{ end }}
+
+
+
           </div>
         </div>
       </div>
@@ -184,6 +197,7 @@ body { padding-top: 70px; }
         {{ end }}
       </div>
 
+{{ if eq $.Data.Title  "" }}{{else}}
       <div class="row">
         {{ if $.ListAll }}
         {{range $i, $val := .Data.ParseableDates}}
@@ -193,6 +207,7 @@ body { padding-top: 70px; }
          {{ end }}
          {{ end }}
       </div>
+    {{ end }}
   </div>
 
 
