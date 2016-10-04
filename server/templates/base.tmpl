@@ -130,10 +130,14 @@ body { padding-top: 70px; }
             <div class="panel-heading">
              <h3 class="panel-title"><a href="#{{index $.Data.SortedHashes $i}}">{{ $date }}</a>
              <span id="info{{index $.Data.SortedHashes $i}}"  {{ if eq $presence  "" }}style="display: none;"{{else}}{{end}}>
-               <span class="lead" id="infotext{{index $.Data.SortedHashes $i}}">
-                 {{if eq $presence "none"}}&#x274C;{{end}}{{if eq $presence "brown"}}&#x1f983;{{end}}{{if eq $presence "white"}}&#x1f413;{{end}}{{if eq $presence "multiple"}}&#x1f413;&#x1f983;{{end}}{{ if $egg}}&#x1F95A;{{end}}{{ if $face}}&#x1F603;{{end}}
-               </span>
-                 <a href="#"><span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}" style="color:white"></span></a>
+                 <img src="/static/img/274c.png" height="24pt" id="{{index $.Data.SortedHashes $i}}none" {{if eq $presence "none"}}{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/1f414.png" height="24pt" id="{{index $.Data.SortedHashes $i}}white" {{if eq $presence "white"}}style="display: inline;"{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/1f413.png" height="24pt" id="{{index $.Data.SortedHashes $i}}brown" {{if eq $presence "brown"}}style="display: inline;"{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/1f413.png" height="24pt" id="{{index $.Data.SortedHashes $i}}multiple" {{if eq $presence "multiple"}}{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/1f414.png" height="24pt" id="{{index $.Data.SortedHashes $i}}multiple2" {{if eq $presence "multiple"}}{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/egg.png" height="24pt" id="{{index $.Data.SortedHashes $i}}egg" {{if $egg }}{{else}}style="display: none;"{{end}}></img>
+                 <img src="/static/img/1f642.png" height="24pt" id="{{index $.Data.SortedHashes $i}}face" {{if $face }}{{else}}style="display: none;"{{end}}></img>
+                 <a href="#"><span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}" {{ if eq $presence  "" }}style="display: none;"{{else}}style="color:white"{{end}}></span></a>
              </span>
              </h3>
             </div>
@@ -148,45 +152,46 @@ body { padding-top: 70px; }
 
            <div class="panel-footer" >
              <form action="/update" method="post" {{ if eq $presence  "" }}{{else}}style="display: none;"{{end}} id="form{{index $.Data.SortedHashes $i}}" >
-               <div class="row">
+               <div class="row ">
                  <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
-                 <div class="form-check col-xs-5">
+                 <div class="form-check col-xs-6">
                    <fieldset class="form-group" >
                      <div class="form-check">
                        <label class="form-check-label">
                          <input type="radio" class="form-check-input" name="presence" id="optionsRadios0" value="none" {{if eq $presence "none"}}checked{{end}}>
-                         No chicken &#x274C;
+                         No chicken <img src="/static/img/274c.png" height="16pt"></img>
                        </label>
                      </div>
                      <div class="form-check">
                        <label class="form-check-label">
                          <input type="radio" class="form-check-input" name="presence" id="optionsRadios1" value="white" {{if eq $presence "white"}}checked{{end}}>
-                         White &#x1f413;
+                         White  <img src="/static/img/1f414.png" height="18pt"></img>
                        </label>
                      </div>
                      <div class="form-check">
                      <label class="form-check-label">
                          <input type="radio" class="form-check-input" name="presence" id="optionsRadios2" value="brown" {{if eq $presence "brown"}}checked{{end}}>
-                         Brown &#x1f983;
+                         Brown <img src="/static/img/1f413.png" height="18pt"></img>
                        </label>
                      </div>
                      <div class="form-check disabled">
                      <label class="form-check-label">
                          <input type="radio" class="form-check-input" name="presence" id="optionsRadios3" value="multiple" {{if eq $presence "multiple"}}checked{{end}}>
-                         2+ &#x1f413; &#x1f983;
+                         2+ <img src="/static/img/1f413.png" height="18pt"></img><img src="/static/img/1f414.png" height="18pt"></img>
                        </label>
                      </div>
                    </fieldset>
                  </div>
-                 <div class="form-group col-xs-7">
+                 <div class="form-group col-xs-6">
                    <div class="checkbox">
                      <label>
-                       <input type="checkbox" name="egg" {{if $egg}}checked{{end}}> Egg-laying is occuring &#x1F95A;
+                       <input type="checkbox" name="egg" {{if $egg}}checked{{end}}> Egg laying? <img src="/static/img/egg.png" height="18pt"></img>
+
                      </label>
                    </div>
                    <div class="checkbox">
                      <label>
-                       <input type="checkbox" name="face" {{if $face}}checked{{end}}> Face is visible  &#x1F603;
+                       <input type="checkbox" name="face" {{if $face}}checked{{end}}> Face is visible  <img src="/static/img/1f642.png" height="18pt"></img>
                      </label>
                    </div>
                    <div class="form-check">
@@ -229,6 +234,7 @@ setInterval(function() {
 
 $(".inforedo").click(function(e){
   // Holds the product ID of the clicked element
+  console.log("Redo")
   $("#form"+$(this).attr('id')).css("display","inline");
   $("#info"+$(this).attr('id')).css("display","none");
   e.preventDefault();
@@ -246,23 +252,23 @@ $(function () {
                 $("#form"+data.id).css("display","none");
                 $("#info"+data.id).css("display","inline");
                 $("#infotext"+data.id).html("")
-                if (data.presence=="none") {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x274C")
-                }
-                if (data.presence=="brown") {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x1f983")
-                }
-                if (data.presence=="white") {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x1f413")
-                }
+                console.log("#"+data.id + data.presence)
+                $("#"+data.id + "none").css("display","none");
+                $("#"+data.id + "brown").css("display","none");
+                $("#"+data.id + "white").css("display","none");
+                $("#"+data.id + "multiple").css("display","none");
+                $("#"+data.id + "multiple2").css("display","none");
+                $("#"+data.id + "egg").css("display","none");
+                $("#"+data.id + "face").css("display","none");
+                $("#"+data.id + data.presence).css("display","inline");
                 if (data.presence=="multiple") {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x1f413;&#x1f983;")
+                  $("#"+data.id + data.presence + "2").css("display","inline");
                 }
-                if (data.egg == true) {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x1F95A;")
+                if (data.egg==true) {
+                  $("#"+data.id + "egg").css("display","inline");
                 }
-                if (data.face == true) {
-                  $("#infotext"+data.id).html($("#infotext"+data.id).html() + "&#x1F603;")
+                if (data.egg==face) {
+                  $("#"+data.id + "face").css("display","inline");
                 }
                 toastr.success(data.status, 'Thanks!', {timeOut: 3000})
               } else {
