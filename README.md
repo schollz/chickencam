@@ -89,4 +89,4 @@ go build
 
 ![](https://raw.githubusercontent.com/schollz/chickencam/master/server/static/img/poppingin.jpg)
 
-## 10. There is no step 10.
+## 10. There is no step 10
