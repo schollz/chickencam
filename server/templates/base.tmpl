@@ -110,7 +110,7 @@ body { padding-top: 70px; }
         {{range $i, $date := .Data.SortedDates}}
         {{ $activity := index $.Data.Activity $i}}
         <div class="col-sm-6 col-md-4" id="{{index $.Data.SortedHashes $i}}">
-          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel {{ if eq $activity ""}}{{ else if eq $activity "chicken"}}panel-warning{{ else if eq $activity "egg"}}panel-danger{{ else if eq $activity "notinview"}}panel-info{{ end }}">
+          <div id="panel{{index $.Data.SortedHashes $i}}" class="panel panel-primary">
 
             <div class="panel-heading">
              <h3 class="panel-title"><a href="#{{index $.Data.SortedHashes $i}}">{{ $date }}</a></h3>
@@ -125,42 +125,50 @@ body { padding-top: 70px; }
            </div>
 
            <div class="panel-footer">
+             <div id="info{{index $.Data.SortedHashes $i}}"  style="display: none;">
+               <p class="lead" id="infotext{{index $.Data.SortedHashes $i}}">White Chicken, laying egg
+                 <a href="#">
+                  <span class="glyphicon glyphicon-repeat inforedo" id="{{index $.Data.SortedHashes $i}}"></span>
+                </a>
+              </p>
+             </div>
              <form action="/update" method="post" id="form{{index $.Data.SortedHashes $i}}">
                <div class="row">
                  <input type="hidden" name="id" value="{{index $.Data.SortedHashes $i}}">
-                 <div class="form-check col-sm-5">
+                 <div class="form-check col-xs-5">
                    <fieldset class="form-group">
                      <div class="form-check">
                        <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios1" value=""  {{ if eq $activity ""}}checked{{ end }}>
-                         Unclassified
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios0" value="none">
+                         No chicken
                        </label>
                      </div>
                      <div class="form-check">
                        <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios1" value="notinview"  {{ if eq $activity "notinview"}}checked{{ end }}>
-                         Not in view
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios1" value="white">
+                         White chicken
                        </label>
                      </div>
                      <div class="form-check">
                      <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios2" value="chicken" {{ if eq $activity "chicken"}}checked{{ end }}>
-                         In view
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios2" value="brown">
+                         Brown chicken
                        </label>
                      </div>
                      <div class="form-check disabled">
                      <label class="form-check-label">
-                         <input type="radio" class="form-check-input" name="activity" id="optionsRadios3" value="egg" {{ if eq $activity "egg"}}checked{{ end }}>
-                         Laying egg
+                         <input type="radio" class="form-check-input" name="presence" id="optionsRadios3" value="multiple">
+                         2+ chickens
                        </label>
                      </div>
                    </fieldset>
                  </div>
-                 <div class="form-group col-sm-7">
-                   <label for="exampleTextarea">Chicken notes:</label>
-                   <textarea class="form-control" name="notes" rows="3">{{index $.Data.Notes $i}}</textarea>
-                 </div>
-                 <div class="form-group col-sm-12">
+                 <div class="form-group col-xs-7">
+                   <div class="checkbox">
+                     <label>
+                       <input type="checkbox" name="egg"> Egg-laying is occuring
+                     </label>
+                   </div>
                    <div class="form-check">
                      <button type="submit" class="btn btn-primary btn-block update_form">Submit</button>
                    </div>
@@ -196,6 +204,14 @@ setInterval(function() {
     myImageElement.src = '/static/data/current.jpg?rand=' + new Date().getTime();
 }, 15000);
 // this is the class of the submit button
+
+$(".inforedo").click(function(e){
+  // Holds the product ID of the clicked element
+  $("#form"+$(this).attr('id')).css("display","inline");
+  $("#info"+$(this).attr('id')).css("display","none");
+  e.preventDefault();
+});
+
 $(function () {
     $('form').on('submit', function (e) {
         $.ajax({
@@ -203,21 +219,12 @@ $(function () {
             url: '/update',
             data: $(this).serialize(),
             success: function (data) {
+              $("#form"+data.id).css("display","none");
+              $("#info"+data.id).css("display","inline");
+              $("#infotext"+data.id).text(data.status)
               console.log($(this).serialize());
                console.log(data); // show response from the php script.
                toastr.success('ID ' + data.id + " updated", 'Thanks!', {timeOut: 3000})
-               if (data.activity == "notinview") {
-                 $('#panel'+data.id).removeClass().addClass('panel panel-info');
-               }
-               if (data.activity == "egg") {
-                 $('#panel'+data.id).removeClass().addClass('panel panel-danger');
-               }
-               if (data.activity == "chicken") {
-                 $('#panel'+data.id).removeClass().addClass('panel panel-warning');
-               }
-               if (data.activity == "") {
-                 $('#panel'+data.id).removeClass().addClass('panel');
-               }
             },
             error: function (data) {
 
