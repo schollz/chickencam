@@ -1,4 +1,4 @@
-# ChickenCam in 10 easy steps
+# Raspberry Pi ChickenCam in 10 easy steps
 
 ## Demo: [watchchickens.online](https://watchchickens.online)
 ![](https://raw.githubusercontent.com/schollz/hens/master/server/static/img/chicken.png)
@@ -34,7 +34,9 @@ Make sure this WiFi will work outside.
 ## 3. Download packages
 
 ```
-sudo apt-get install apcalc python3 python3-setuptools zsh openssh-server openssh-client tree git vim htop python3-pyaudio python3-pil python3-numpy python3-rpio.gpio lame imagemagick
+sudo apt-get install apcalc python3 python3-setuptools zsh \
+    openssh-server openssh-client tree git vim htop python3-pyaudio \
+    python3-pil python3-numpy python3-rpio.gpio lame imagemagick
 ```
 
 ## 4. [Setup audio](http://raspberrypi.stackexchange.com/questions/37177/best-way-to-setup-usb-mic-as-system-default-on-raspbian-jessie)
@@ -87,4 +89,4 @@ go build
 
 ![](https://raw.githubusercontent.com/schollz/chickencam/master/server/static/img/poppingin.jpg)
 
-## 10. There is no step 10.
+## 10. There is no step 10
