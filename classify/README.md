@@ -29,3 +29,5 @@ To run using the current dataset, do
 ```
 python run.py
 ```
+
+Currently it hits ~80% accuracy, although it might be a little better without the bad manual classifications.
