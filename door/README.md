@@ -21,4 +21,4 @@ An attempt to make an automated gate for the chickens!
 
 Taken directly from [Eric Escobar's Chicken_Door](https://github.com/ericescobar/Chicken_Door).
 
-![]()
+![](https://raw.githubusercontent.com/schollz/chickencam/master/door/schematics/Electrical_Diagram.jpg)
