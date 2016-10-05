@@ -1,0 +1,1 @@
+{"Presence":"white","Egglaying":true,"Face":false}
