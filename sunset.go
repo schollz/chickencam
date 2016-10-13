@@ -2,25 +2,59 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
 // Show sunrise and sunset for first 5 days of June in LA
 func main() {
 
-	_, timeToSunset := GetSunset()
-	_, timeToSunrise := GetSunrise()
-	fmt.Println(timeToSunrise.Hours(), timeToSunset.Hours())
+	_, timeToSunset := GetSunset(0)
+	_, timeToSunrise := GetSunrise(0)
+	if len(os.Args[1:]) == 0 {
+		fmt.Println(timeToSunrise.Hours(), timeToSunset.Hours())
+	} else {
+		numberOfDays := 200
+		secondsToEvent := []string{}
+		i := 0
+		for days := 0; days < numberOfDays; days++ {
+			_, timeToEvent := GetSunset(days)
+			theTime := int(math.Floor(timeToEvent.Seconds() + 30*60))
+			if theTime > 0 {
+				secondsToEvent = append(secondsToEvent, strconv.Itoa(theTime))
+				i++
+			}
+		}
+		sunset := fmt.Sprintf("unsigned long sunset[%d] = {%s};", numberOfDays, strings.Join(secondsToEvent, ","))
+
+		secondsToEvent = []string{}
+		i = 0
+		for days := 0; days < numberOfDays; days++ {
+			_, timeToEvent := GetSunrise(days)
+			theTime := int(math.Floor(timeToEvent.Seconds() - 30*60))
+			if theTime > 0 {
+				secondsToEvent = append(secondsToEvent, strconv.Itoa(theTime))
+				i++
+			}
+		}
+		sunrise := fmt.Sprintf("unsigned long sunrise[%d] = {%s};", len(secondsToEvent), strings.Join(secondsToEvent, ","))
+
+		ioutil.WriteFile("addToIno.txt", []byte(sunset+"\n"+sunrise), 0644)
+	}
 }
 
 // Taken from https://github.com/keep94/sunrise
-func GetSunset() (time.Time, time.Duration) {
+func GetSunset(offset int) (time.Time, time.Duration) {
 	var s Sunrise
 
 	// Start time is June 1, 2013 PST
 	location, _ := time.LoadLocation("America/New_York")
 	startTime := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, location)
+	startTime = startTime.AddDate(0, 0, offset)
 
 	// Coordinates of LA are 34.05N 118.25W
 	s.Around(35.994, -78.8986, startTime)
@@ -32,12 +66,13 @@ func GetSunset() (time.Time, time.Duration) {
 }
 
 // Taken from https://github.com/keep94/sunrise
-func GetSunrise() (time.Time, time.Duration) {
+func GetSunrise(offset int) (time.Time, time.Duration) {
 	var s Sunrise
 
 	// Start time is June 1, 2013 PST
 	location, _ := time.LoadLocation("America/New_York")
 	startTime := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, location)
+	startTime = startTime.AddDate(0, 0, offset)
 
 	// Coordinates of LA are 34.05N 118.25W
 	s.Around(35.994, -78.8986, startTime)
