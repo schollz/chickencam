@@ -18,7 +18,7 @@ func main() {
 	if len(os.Args[1:]) == 0 {
 		fmt.Println(timeToSunrise.Hours(), timeToSunset.Hours())
 	} else {
-		numberOfDays := 200
+		numberOfDays := 50
 		secondsToEvent := []string{}
 		i := 0
 		for days := 0; days < numberOfDays; days++ {
