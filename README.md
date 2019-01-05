@@ -1,6 +1,5 @@
 # Raspberry Pi ChickenCam in 10 easy steps
 
-## Demo: [chickencam.schollz.com](https://chickencam.schollz.com/)
 ![](https://raw.githubusercontent.com/schollz/hens/master/server/static/img/chicken.png)
 
 ## Requirements
